@@ -1,0 +1,31 @@
+#welcomeWrap {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(5px);
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#loginRegister {
+    font-family: 'KIMM_Bold';
+    border: 1px, solid, white;
+    width: 500px;
+    height: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#loginRegister > h2 {
+    color: white;
+    margin-bottom: 80px;
+}
+
+
+
+
+

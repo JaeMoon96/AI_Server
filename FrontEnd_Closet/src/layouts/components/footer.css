@@ -1,0 +1,29 @@
+footer {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 60px;
+    background: rgba(0, 0, 0, 1);
+    /* background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgb(0, 0, 0)); */
+}
+
+footer::before {
+    display: flex;
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 1px;
+
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0));
+}
+
+footer>p {
+    display: flex;
+    color: #fff;
+    opacity: 0.6;
+    font: normal 12px/1 "KIMM_Bold", sans-serif;
+}

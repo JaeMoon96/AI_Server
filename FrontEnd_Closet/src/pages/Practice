@@ -1,0 +1,31 @@
+import useState from 'react'
+
+function AddComponent() {
+    const [value, setValue] = useState("");
+    const [nameList, setNameList] = useState([]);
+
+    const add = () => {
+        if(value.trim() === "") {
+            return
+        }
+        
+        setNameList([...nameList, { id : Date.now(), value : value}])
+        setValue("");
+    }
+
+    const remove = (id) => {
+        setNameList(nameList.filter((item) => item.id != id))
+    }
+
+    return <div>
+        <input type='text' value={value} placeholder='이름 입력' onChange={(e)=>setName(e.target.value)}></input> 
+        <button onClick={add}>추가</button>
+
+        {nameList.map((name) => {
+            return <div key={name.id}><p>{name.value}</p>
+                    <button onClick={()=>remove(name.id)}>삭제</button>
+            </div>
+        } )}
+
+    </div>
+}

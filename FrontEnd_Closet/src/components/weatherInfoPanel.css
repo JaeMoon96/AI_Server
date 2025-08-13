@@ -1,0 +1,21 @@
+.weatherInfo {
+    /* border: 1px solid white; */
+    width: 90%;
+    display: flex;
+}
+
+.weatherInfo img {
+    object-fit: cover;
+    width: 33.3%;
+}   
+
+.weatherWindow div{
+    font-size: 40px;
+}
+
+.weatherWindow{
+    width: 33.3%;
+    border: 1px solid white;
+    
+}
+

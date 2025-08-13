@@ -1,0 +1,270 @@
+/* ✅ myClosetPage.css */
+body {
+  background-color: #1e1e1e;
+  color: white;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.closet-container {
+  display: flex;
+  height: calc(100vh - 100px - 60px);
+  padding: 0;
+}
+
+.closet-left {
+  width: 33.3%;
+  padding-top: 20px;
+  
+  overflow : scroll;
+}
+
+.closet-left h2 {
+  font-family: 'KIMM_Bold';
+}
+
+.closet-second-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding : 0 20px;
+}
+
+.closet-card-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: min-content;
+  gap: 12px;
+  height: 90%;
+  padding: 0 20px;
+  border-right: 1px solid #333;
+  overflow-y: scroll;
+  align-items: start; 
+}
+
+.cloth-card {
+  background-color: #2a2a2a;
+  border: 1px solid #444;
+  padding: 6px;
+  text-align: center;
+  font-size: 13px;
+  height: 200px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.categoryFilter {
+  margin-bottom: 10px;
+  margin-right: 15px;
+}
+
+.subCategoryFilter {
+  opacity: 0;
+  transform: translateX(20px);
+  width: 115px !important;
+  transition: all 0.3s ease-in-out;
+  pointer-events: none;
+}
+
+.subCategoryFilter.show {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.cloth-card:hover {
+  background-color: #333;
+  transform: translateY(-2px);
+}
+
+.cloth-card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.cloth-card p {
+  margin: auto auto;
+  font-size: 15px;
+  color: white;
+  font-family: "KIMM_Bold", sans-serif;
+
+}
+
+.cloth-card.selected {
+  outline: 2px solid #3b8b3b;
+  background-color: #333;
+}
+
+.card-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+}
+
+.card-buttons button {
+  flex: 1;
+  font-size: 12px;
+  height: 20px;
+  cursor: pointer;
+  background-color: #555;
+  color: white;
+  border: none;
+}
+
+.card-buttons button:hover {
+  background-color: #777;
+}
+
+.closet-detail-panel {
+  width: 33.3%;
+  padding: 20px;
+  
+  overflow-y: auto;
+  /* background-color: #1e1e1e; */
+  /* border: 1px solid white; */
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items:center;
+}
+
+.closet-detail-panel-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: top;
+  align-items: center;
+  /* border-right: 1px solid #333; */
+  height: 90%;
+  /* padding: calc(100% - ) */
+}
+
+.border-panel {
+  width: 1px;
+  height: 90%;
+  background-color: #333;
+  margin-top: 70px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.closet-detail-panel img {
+  width: 400px;
+  height: 500px;
+  object-fit: cover;
+  margin-bottom: 30px;
+  /* border: solid 1px red; */
+}
+
+.panel {
+  /* border: solid 1px white; */
+  width: calc(100% - (100% - 400px));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.description{
+  width: 100%;
+  border: 1px solid #333;
+  margin-bottom: 20px;
+}
+
+.description>div {
+  display: flex;
+  border-bottom: 1px solid #333;
+}
+.description>div>span {
+  padding: 15px;
+  display: flex;
+  /* color: #9; */
+  font: bold 14spx/1 "Noto Sans KR";
+}
+.description>div>span:first-of-type {
+  border-right: 1px solid #333;
+  flex: 3.5;
+}
+.description>div>span:last-of-type {
+  border-right: 1px solid #333;
+  flex: 6.5;
+  font-weight: normal;
+}
+
+
+.weatherInfoPanel {
+  width: 33.3%;
+  padding: 20px;
+  /* background-color: #111; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #aaa;
+}
+
+.closet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.register-button {
+  padding: 6px 12px;
+  background-color: #555;
+  color: white;
+  border: none;
+  cursor: pointer;
+  height: 30px;
+  font-family: 'Noto Sans Kr';
+  font-weight: bold;
+  height: 38px;
+}
+
+.register-button:hover {
+  background-color: #777;
+}
+
+.buttons {
+  position: relative;
+  width: 100%;
+  display: flex;
+  gap: 5px;
+  margin-bottom: 15px;
+}
+.buttons>button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  padding: 15px;
+  background-color: #555;
+  color: #fff;
+  cursor: pointer;
+  font: bold 14px/1 "Noto Sans KR" !important;
+}
+
+.buttons>button:hover {
+  background-color: #777;
+}
+
+.descriptionModify {
+  /* border: 1px solid white; */
+  font: bold 14px/1 "Noto Sans KR" !important;
+}
+
+.descriptionModify input,
+.descriptionModify select {
+  margin-bottom: 15px;
+}
+
+.closet-placeholder {
+  font: bold 25px/1 "KIMM_Bold" !important;
+  margin: auto auto;
+}

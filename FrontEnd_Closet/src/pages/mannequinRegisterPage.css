@@ -1,0 +1,55 @@
+.MannequinRegisterPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 0;
+  width: 100%;
+  min-height: 200px;
+}
+
+.MannequinTitle {
+  font-family: 'KIMM_Bold';
+  margin-bottom: 20px;
+}
+
+.formWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* gap: 16px; */
+  width: 100%;
+  max-width: 600px;
+}
+
+.fileInput {
+  height: 50px;
+  width: 80%;
+  max-width: 400px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.previewMannequin {
+  display: block;
+  max-width: 80%;
+  height: auto;
+  margin: 20px auto;
+  margin-top: 5px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+.submitButton {
+  padding: 12px 24px;
+  background-color: #222;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 0px !important;
+}
+
+.submitButton:hover {
+  background-color: #444;
+}

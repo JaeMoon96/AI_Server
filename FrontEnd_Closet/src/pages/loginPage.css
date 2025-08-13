@@ -1,0 +1,170 @@
+.loginForm {
+    /* border: 1px solid white; */
+    width: 100%;
+    margin: 0 auto;
+    height: 100vh;
+    backdrop-filter: blur(5px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.loginForm label {
+    width: 240px;
+    display: flex;
+    flex-direction: column;
+}
+
+.logo.glitch {
+    position: relative;
+    color: white;
+    font: italic bold 26px/1 "KIMM_Bold", sans-serif;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+}
+.logo.glitch::before,
+.logo.glitch::after {
+    content: "ISECLOTH";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    color: white;
+    background: transparent;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.logo.glitch::before {
+    text-shadow: -2px 0 red;
+    animation: glitchTop 1s infinite linear;
+    transform: translateX(2px);
+}
+
+.logo.glitch::after {
+    text-shadow: -2px 0 blue;
+    animation: glitchBottom 1s infinite linear;
+    transform: translateX(-2px);
+}
+
+@keyframes glitchTop {
+
+    0%,
+    100% {
+        clip-path: inset(0 0 90% 0);
+    }
+
+    10% {
+        clip-path: inset(10% 0 80% 0);
+    }
+
+    20% {
+        clip-path: inset(20% 0 70% 0);
+    }
+
+    30% {
+        clip-path: inset(30% 0 60% 0);
+    }
+
+    40% {
+        clip-path: inset(40% 0 50% 0);
+    }
+
+    50% {
+        clip-path: inset(50% 0 40% 0);
+    }
+
+    60% {
+        clip-path: inset(60% 0 30% 0);
+    }
+
+    70% {
+        clip-path: inset(70% 0 20% 0);
+    }
+
+    80% {
+        clip-path: inset(80% 0 10% 0);
+    }
+
+    90% {
+        clip-path: inset(90% 0 0 0);
+    }
+}
+
+@keyframes glitchBottom {
+
+    0%,
+    100% {
+        clip-path: inset(90% 0 0 0);
+    }
+
+    10% {
+        clip-path: inset(80% 0 10% 0);
+    }
+
+    20% {
+        clip-path: inset(70% 0 20% 0);
+    }
+
+    30% {
+        clip-path: inset(60% 0 30% 0);
+    }
+
+    40% {
+        clip-path: inset(50% 0 40% 0);
+    }
+
+    50% {
+        clip-path: inset(40% 0 50% 0);
+    }
+
+    60% {
+        clip-path: inset(30% 0 60% 0);
+    }
+
+    70% {
+        clip-path: inset(20% 0 70% 0);
+    }
+
+    80% {
+        clip-path: inset(10% 0 80% 0);
+    }
+
+    90% {
+        clip-path: inset(0 0 90% 0);
+    }
+}
+
+.bar {
+    position: relative;
+    width: 240px;
+    height: 1px;
+    background: #555;
+}
+
+.loginForm span {
+    display: flex;
+}
+
+.loginButton {
+    margin-top: 10px;
+    font: bold 16px/1 "KIMM_Bold";
+    width: 240px;
+    height: 38px;
+    cursor: pointer;
+}
+
+.loginForm .register {
+  margin-top: 15px;
+  font-size: 13px;
+  color: #aaa;
+  text-decoration: none;
+  text-align: center;
+  font: italic bold 12px/1 "KIMM_Bold", sans-serif;
+  cursor: pointer;
+}
+
+.loginForm .register:hover {
+    color: white;
+}

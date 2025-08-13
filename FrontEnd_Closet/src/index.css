@@ -1,0 +1,30 @@
+/* Main Font */
+@font-face {
+    font-family: 'KIMM_Bold';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2212@1.0/KIMM_Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@import url('//fonts.googleapis.com/earlyaccess/notosanskr.css');
+
+a {
+    text-decoration: none;
+}
+
+ol,
+ul,
+li {
+    list-style: none;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-size: cover;
+    background-image: url("./assets/background.jpeg");
+}

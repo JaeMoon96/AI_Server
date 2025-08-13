@@ -1,0 +1,38 @@
+.registerPage {
+    /* border: solid 1px white; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    backdrop-filter: blur(5px);
+}
+
+.registerPage span {
+    cursor: pointer;
+}
+
+.registerForm {
+    /* border: solid 1px white; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;;
+}
+
+.registerPage input{
+    width: 100%;
+    height: 40px;
+    margin: 10px;
+}
+
+.gender select {
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.registerButton {
+    width: 90%;
+}
+

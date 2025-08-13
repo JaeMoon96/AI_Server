@@ -1,0 +1,73 @@
+.MyMenuStart {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    width: 30%;
+    height: 100%;
+}
+
+.MyMenuTitle,
+.AboutClothTitle,
+.AboutMannequinTitle,
+.AboutAccountTitle {
+    font-family: "KIMM_Bold";
+}
+.MyMenuStart {
+    padding-top: 100px;
+}
+
+.MyMenuTitle {
+    margin-bottom: 40px;
+}
+
+.AboutCloth,
+.AboutMannequin,
+.AboutAccount {
+    margin-bottom: 30px;
+}
+
+.AboutMannequinTitle,
+.AboutClothTitle,
+.AboutAccountTitle {
+    margin-bottom: 20px;
+}
+
+.AboutAccountSelect div,
+.AboutClothSelect div,
+.AboutMannequinSelect div {
+    margin-bottom: 20px;
+    position: relative;
+    transition: padding 0.3s;
+}
+
+.SelectMenu {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+}
+
+.AboutAccountSelect div::before,
+.AboutClothSelect div::before,
+.AboutMannequinSelect div::before {
+    content: ">    ";
+    position: absolute;
+    left: 0;
+    display: none;
+}
+
+.AboutAccountSelect div:hover,
+.AboutClothSelect div:hover,
+.AboutMannequinSelect div:hover {
+    /* background-color: #777; */
+    cursor: pointer;
+    font-weight: bold;
+    padding-left: 15px;
+}
+
+.AboutAccountSelect div:hover::before,
+.AboutClothSelect div:hover::before,
+.AboutMannequinSelect div:hover::before {
+    display: flex;
+}

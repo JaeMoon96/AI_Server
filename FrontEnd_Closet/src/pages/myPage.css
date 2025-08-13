@@ -1,0 +1,268 @@
+.MyPage {
+    padding: 20px;
+    /* border: 1px solid white; */
+    height: calc(100vh - 160px);
+}
+
+.info {
+    width: 100%;
+    /* border: 1px solid white; */
+    height: 95%;
+    display: flex;
+
+}
+
+.mannequin {
+    /* border: 1px solid white; */
+    width: 32%;
+    height: 100%;
+    overflow: scroll;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-right: 40px;
+    border-right: 1px solid #333;
+}
+
+.mannequin3D {
+    width: 100%;
+    height: 100%;
+}
+
+.MyPage h2 {
+    /* border: 1px solid white; */
+    font-family: 'KIMM_Bold';
+}
+
+.mannequin>span {
+    font-family: 'KIMM_Bold';
+    font-size: 20px;
+    display: inline-block;
+    margin-top: 20px;
+    margin-bottom: 40px;
+    height: 1em;
+    width: 100%;
+    text-align: center;
+}
+
+.shibal {
+    width: 100%;
+    /* border: 1px solid white; */
+}
+
+.infoWindow {
+    /* border: 1px solid red; */
+    width: 70%;
+    height: 100%;
+    padding: 0 40px;
+    display: flex;
+}
+
+.infoWindowDesc {
+    width: 50%;
+    height: 100%;
+    /* border: 1px solid white; */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.information {
+    /* border: 1px solid white; */
+    margin-top: 15px;
+    width: 100%;
+    height: 90%;
+    display: flex inline-block;
+    flex-direction: column;
+    justify-content: center;
+    align-items: first baseline;
+}
+
+.information div {
+    display: flex;
+    width: 100%;
+
+    /* border: 1px solid white; */
+    align-items: center;
+}
+
+.allInfo {
+    width: 100%;
+    height: 90%;
+}
+
+.information div>span:first-of-type {
+    padding: 0 15px;
+}
+
+.information div>span {
+    display: flex;
+    /* 또는 inline-block */
+    height: 40px;
+    justify-content: start;
+    align-items: center;
+    /* 또는 height와 똑같이 맞추면 세로 중앙 느낌 */
+}
+
+.information div>span>input {
+    border: none;
+    width: 100%;
+    background: #333;
+    box-shadow: inset 0 0 5px 0 rgba(0, 0, 0, 1);
+    padding: 0 15px;
+    margin: 0;
+}
+
+.information div>span>span {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    border: none !important;
+    padding: 0 15px;
+}
+
+
+.information>div>span:first-of-type {
+    width: 30%;
+    text-align: left;
+    border-right: 1px solid #333;
+    padding-left: 0px !important;
+}
+
+.information>div>span:last-of-type,
+.information>div>input:last-of-type,
+.information>div>select:last-of-type {
+    width: 60%;
+    text-align: left;
+
+}
+
+/* .information div span :first-of-type {
+    flex: 6;
+}
+.information div span :last-of-type {
+    flex: 4;
+} */
+
+.information span {
+    font-family: "Noto Sans KR";
+    /* border: 1px solid white; */
+}
+
+.titleOfInformation {
+    font-family: 'KIMM_Bold';
+    font-size: 20px;
+    display: inline-block;
+    width: 100%;
+    /* border: 1px solid white; */
+}
+
+.myClosetDiv>span {
+    font-family: 'KIMM_Bold';
+}
+
+.ButtonMyInfo {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    /* border: 1px solid white; */
+}
+
+.ButtonMyInfo button {
+    background-color: #555;
+    margin-top: 20px;
+    color: #fff;
+    cursor: pointer;
+    font: bold 14px/1 "Noto Sans KR" !important;
+    width: 100px;
+    height: 30px;
+}
+
+
+.ButtonMyInfo button:hover {
+    background-color: #777;
+}
+
+.ClosetPanel {
+    width: 100%;
+    /* height: 50%; */
+    /* border: 1px solid white; */
+}
+
+.allInfo {
+    display: flex;
+    height: 80%;
+    margin-top: 15px;
+}
+
+
+.topInfo,
+.bottomInfo {
+    display: flex;
+    flex-direction: column;
+    flex: 5;
+}
+
+.topInfo div,
+.bottomInfo div {
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+
+.bottomInfo span,
+.topInfo span {
+    display: inline-flex;
+    height: 40px;
+    padding: 0 15px;
+    justify-content: start;
+    align-items: center;
+    vertical-align: middle;
+}
+
+.topInfo>div>span:first-of-type,
+.bottomInfo>div>span:first-of-type {
+    flex: 5.5;
+    border-right: 1px solid #333;
+    padding-left: 0px !important;
+}
+
+.topInfo>div>span:last-of-type,
+.bottomInfo>div>span:last-of-type {
+    flex: 4.5;
+}
+
+.closetInformation span {
+    font-family: "Noto Sans KR"
+}
+
+.tlqkf2 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.emptyInfo {
+    /* border: 1px solid white; */
+    width: 100%;
+    height: 30px;
+}
+
+.calcTop,
+.calcBottom {
+    border-top: 1px solid #333;
+}
+
+.border {
+    height: 100%;
+    background-color: #333;
+    width: 1px;
+    margin: 0 40px;
+}
+
+.SelectMenu {
+    display: flex;
+}

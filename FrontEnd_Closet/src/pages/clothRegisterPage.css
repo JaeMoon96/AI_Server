@@ -1,0 +1,112 @@
+/* 전체 페이지 영역 */
+/* 전체 등록 페이지 */
+.cloth-register-page {
+  /* background-color: #1e1e1e; */
+  /* border: 1px solid white; */
+  color: white;
+  padding: 60px 24px;                 /* ⬅ 상하 + 좌우 여백 */
+  display: flex;
+  justify-content: center;            /* 중앙 정렬 */
+  align-items: flex-start;
+  transform: none !important;
+  filter: none !important;
+  perspective: none !important;
+}
+
+.form-wrapper {
+  /* border: 1px solid white; */
+  width: 100%;
+  max-width: 500px;
+}
+
+/* 헤딩 */
+.cloth-register-page h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* 폼 박스 */
+form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 500px;
+}
+
+/* 폼 요소 공통 */
+label {
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: #ddd;
+}
+
+input,
+select {
+  height: 38px;
+  padding: 10px;
+  border-radius: 0;
+  border: 1px solid #555;
+  background-color: #2a2a2a;
+  color: white;
+  font-size: 14px;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #888;
+}
+
+/* 이미지 미리보기 */
+.preview {
+  width: 100%;
+  max-height: 250px;
+  object-fit: contain;
+  margin-top: 10px;
+  border: 1px solid #444;
+  border-radius: 6px;
+}
+
+/* 등록 버튼 */
+button[type="submit"] {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  width: 80%;
+  padding: 10px;
+  background-color: #555;;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background-color 0.2s;
+  height: 40px;
+}
+
+button[type="submit"]:hover {
+  background-color: #777;
+}
+
+.preview {
+  margin-bottom : 10px;
+}
+
+.buttonsModify {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.enrollButton{
+  margin: 0 auto;
+}
+
+
+.clothrp input,
+.clothrp select {
+  margin-bottom: 15px;
+  height: auto;
+}

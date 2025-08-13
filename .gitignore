@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+
+# Node.js
+node_modules/
+.env
+
+# JetBrains IDE
+.idea/
+
+# VSCode
+.vscode/
+
+# Files
+.png
+.jpg
+.jpeg
