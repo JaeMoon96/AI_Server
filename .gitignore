@@ -17,3 +17,14 @@ node_modules/
 .png
 .jpg
 .jpeg
+
+data/
+uploads/
+dist/
+build/
+*.glb
+*.zip
+*.mp4
+*.pt
+*.pth
+*.onnx
