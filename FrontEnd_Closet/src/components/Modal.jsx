@@ -1,4 +1,4 @@
-// ✅ src/components/Modal.js
+// ✅ src/components/Modal.jsx
 import React from "react";
 import "./Modal.css"; // 스타일은 따로 관리할 수도 있음
 

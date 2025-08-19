@@ -1,54 +1,59 @@
 const express = require("express");
 const router = express.Router();
-
-const verifyToken = require("../middlewares/authMiddleware");
 const upload = require("../config/multer");
+const authMiddleware = require("../middlewares/authMiddleware");
+const { Types: { ObjectId } } = require("mongoose");
 
-// ✅ 컨트롤러 파일명 정확히 맞추기 (clothController.js)
+// 🔥 수정된 컨트롤러 import
 const {
-  uploadCloth,
+  registerCloth,
+  modifyCloth,
   getClothes,
   deleteClothes,
-  modifyCloth,
-  getClothStatus,
+  getUnityOutfits,
+  getUnityOutfitById
 } = require("../controllers/clothesController");
 
-// (선택) 라우터 로그
-router.use((req, res, next) => {
-  console.log("✅ /api/cloth 라우터 진입:", req.method, req.originalUrl);
-  next();
-});
-
-// ✅ Multer 에러 → JSON으로 반환
-function multerErrorHandler(err, req, res, next) {
-  if (!err) return next();
-  if (err.code === "LIMIT_FILE_SIZE") {
-    return res.status(400).json({ error: "파일 용량 초과" });
+// ⭐ clothId 사전 생성 미들웨어 (multer 실행 전에!)
+const generateClothId = (req, res, next) => {
+  if (!req._clothId) {
+    req._clothId = new ObjectId();
+    console.log(`🆔 [route] clothId 사전 생성: ${req._clothId}`);
   }
-  return res.status(400).json({ error: err.message || "업로드 오류" });
-}
+  next();
+};
 
-// 목록 조회 & 등록
-router
-  .route("/")
-  .get(verifyToken, getClothes)
-  .post(
-    verifyToken, // req.user 보장
-    upload.fields([
-      { name: "cloth_front", maxCount: 1 },
-      { name: "cloth_back",  maxCount: 1 },
-    ]),
-    multerErrorHandler,
-    uploadCloth
-  );
+// 🔥 옷 등록 (동기 방식) - 순서가 중요!
+router.post(
+  "/",
+  authMiddleware,              // 1. 인증 확인
+  generateClothId,             // 2. clothId 미리 생성 ⭐
+  upload.fields([              // 3. multer 실행 (이때 req._clothId 사용)
+    { name: "cloth_front", maxCount: 1 },
+    { name: "cloth_back", maxCount: 1 },
+  ]),
+  (req, res, next) => {        // 4. 업로드 확인 로그
+    console.log('📁 업로드된 파일들:', req.files);
+    console.log('📁 사용된 clothId:', req._clothId);
+    console.log('📁 저장 경로:', req.files?.cloth_front?.[0]?.path);
+    next();
+  },
+  registerCloth                // 5. 컨트롤러 실행
+);
 
-// 상태 폴링 (프론트가 토큰 보냄 → 서버도 검증)
-router.get("/status/:jobId", verifyToken, getClothStatus);
+// 🔥 옷 목록 조회
+router.get("/", authMiddleware, getClothes);
 
-// 수정 / 삭제
-router
-  .route("/:id")
-  .patch(verifyToken, modifyCloth)
-  .delete(verifyToken, deleteClothes);
+// 🔥 옷 수정
+router.put("/:id", authMiddleware, modifyCloth);
+
+// 🔥 옷 삭제
+router.delete("/:id", authMiddleware, deleteClothes);
+
+// 🔥 Unity 전용: 현재 로그인 유저 기준 outfits 포맷
+router.get("/outfits", authMiddleware, getUnityOutfits);
+
+// (선택) 단일 아이템
+router.get("/outfits/:id", authMiddleware, getUnityOutfitById);
 
 module.exports = router;

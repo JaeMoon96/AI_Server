@@ -1,0 +1,44 @@
+{
+  "outfits": [
+    {
+      "id": "tshirt_001",
+      "outfitName": "기본 티셔츠",
+      "type": "Top",
+      "topCategory": "Tshirt",
+      "texturePath": "Tshirt_001",
+      "thumbnailUrl": "https://example.com/thumbnails/shirt1.jpg"
+    },
+    {
+      "id": "tshirt_002",
+      "outfitName": "경영대 티셔츠",
+      "type": "Top",
+      "topCategory": "Tshirt",
+      "texturePath": "Tshirt_002",
+      "thumbnailUrl": ""
+    },
+    {
+      "id": "shirt_002",
+      "outfitName": "셔츠",
+      "type": "Top",
+      "topCategory": "Shirt",
+      "texturePath": "Shirt_001",
+      "thumbnailUrl": ""
+    },
+    {
+      "id": "shorts_001",
+      "outfitName": "반바지",
+      "type": "Bottom",
+      "bottomCategory": "Shorts",
+      "texturePath": "",
+      "thumbnailUrl": "https://example.com/thumbnails/shorts1.jpg"
+    },
+    {
+      "id": "pants_001",
+      "outfitName": "바지",
+      "type": "Bottom",
+      "bottomCategory": "Pants",
+      "texturePath": "",
+      "thumbnailUrl": "https://example.com/thumbnails/pants1.jpg"
+    }
+  ]
+}

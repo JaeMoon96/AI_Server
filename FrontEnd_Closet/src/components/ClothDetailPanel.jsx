@@ -13,6 +13,21 @@ function ClothDetailPanel({ cloth, onUpdate, onDelete }) {
     color: "",
   });
 
+  // 🔥 이미지 URL 생성 함수 (ClothCard와 동일)
+  const getImageUrl = (cloth) => {
+    if (!cloth.imageUrlFront || !cloth.userId) {
+      return "/placeholder-image.png"; // 기본 이미지
+    }
+    
+    // imageUrlFront가 절대경로인 경우 파일명만 추출
+    const filename = cloth.imageUrlFront.includes('/') 
+      ? cloth.imageUrlFront.split('/').pop() 
+      : cloth.imageUrlFront;
+    
+    // API 경로로 이미지 요청
+    return `http://15.165.129.131:3000/api/images/cloth/${cloth.userId}/${cloth._id}/${filename}`;
+  };
+
   // cloth가 바뀔 때마다 form 초기화
   useEffect(() => {
   if (!cloth || !cloth._id) return;
@@ -95,10 +110,15 @@ function ClothDetailPanel({ cloth, onUpdate, onDelete }) {
   return (
     <div className="closet-detail-panel">
       <div className="closet-detail-panel-content">
+      {/* 🔥 이미지 URL 동적 생성으로 변경 */}
       <img
-        src={`http://15.165.129.131:3000${cloth.imageUrl}`}
+        src={getImageUrl(cloth)}
         alt="옷 이미지"
         className="detail-image"
+        onError={(e) => {
+          console.log("ClothDetailPanel 이미지 로드 실패:", e.target.src);
+          e.target.src = "/placeholder-image.png"; // 실패 시 기본 이미지
+        }}
       />
 
       {editMode ? (
@@ -170,8 +190,8 @@ function ClothDetailPanel({ cloth, onUpdate, onDelete }) {
             <div><span>STYLE</span> <span>{form.style}</span></div>
             <div><span>CATEGORY</span> <span>{form.category}</span></div>
             <div><span>KIND</span> <span>{form.subCategory}</span></div>
-            <div><span>SIZE</span> <span>{form.size}</span></div>
-            <div><span>COLOR</span> <span>{form.color}</span></div>
+            
+            
           </div>
           <div className="buttons">
             <button onClick={() => setEditMode(true)} className="detail-button">MODIFY</button>

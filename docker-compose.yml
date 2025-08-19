@@ -1,25 +1,19 @@
-services:  # 여기서부터 각 컨테이너 정의 시작
-
-  node-backend:  # Node.js 백엔드 서버
+services:
+  node-backend:
+    user: "1000:1000"
     build: ./BackEnd
     ports:
       - "3000:3000"
     volumes:
       - ./BackEnd:/app
-      - ./data:/data
+      - /home/ubuntu/weather_cloth_3/data:/weather_cloth_3/data:rw  # ← 이렇게 변경
     env_file:
       - ./BackEnd/.env
     environment:
-      - REDIS_URL=redis://redis:6379   # ✅ 여기만 추가
+      - CONTAINER_DATA_DIR=/weather_cloth_3/data  # ← 이렇게 변경
+      - DATA_DIR=/weather_cloth_3/data            # ← 이렇게 변경
     depends_on:
       - redis
-
-  # fastapi-ai:
-  #   build: ./BackEnd_AI
-  #   ports:
-  #     - "8000:8000"
-  #   volumes:
-  #     - ./BackEnd_AI:/app
 
   redis:
     image: redis:8.0.3

@@ -16,8 +16,8 @@ function Header() {
   return (
     <header>
       <div className="inner">
-        <Link to="/main" className="logo2">I</Link>
-        {/* <Link to="/main" className="logo2 glitch">I</Link> */}
+        {/* <Link to="/main" className="logo2">I</Link> */}
+        <Link to="/main" className="logo2 glitch">ISECLOTH</Link>
 
         <nav>
           <ul>

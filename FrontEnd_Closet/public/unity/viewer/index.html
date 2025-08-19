@@ -1,0 +1,121 @@
+
+
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <title>Unity WebGL Viewer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    html, body { height: 100%; margin: 0; background: #0b0c10; color: #fff; font-family: system-ui, sans-serif; }
+    #unity-root { position: fixed; inset: 0; display: grid; grid-template-rows: 1fr auto; }
+    #unity-canvas { width: 100vw; height: 100vh; display: block; background: #1f2229; }
+    #loading { padding: .5rem 1rem; font-size: 14px; opacity: .8; }
+  </style>
+</head>
+<body>
+  <div id="unity-root">
+    <canvas id="unity-canvas" tabindex="0"></canvas>
+    <div id="loading">Loading…</div>
+  </div>
+
+  <script>
+    // ▼▼▼ 여기만 필요시 변경하세요 ▼▼▼
+    const LOADER_JS = "Build/Build.loader.js"; // 예) "Build/AvatarViewer.loader.js"
+    const BASE      = "Build/Build";           // 예) "Build/AvatarViewer"
+    const STREAMING = "StreamingAssets";       // 없으면 그대로 둬도 무방
+    // ▲▲▲ 여기만 필요시 변경하세요 ▲▲▲
+
+    // ---- React iframe ↔ Unity 브릿지 (postMessage) ----
+    window.__unityReadyCallbacks = [];
+    window.__unitySend = function (go, method, arg) {
+      const msg = (typeof arg === "string") ? arg : JSON.stringify(arg);
+      if (window.unityInstance) {
+        window.unityInstance.SendMessage(go, method, msg);
+      } else {
+        window.__unityReadyCallbacks.push(() => window.unityInstance.SendMessage(go, method, msg));
+      }
+    };
+    window.addEventListener("message", (ev) => {
+      if (!ev.data || ev.data.type !== "unity:init") return;
+      const { payload, token } = ev.data;
+      window.__unitySend("Bridge", "SetToken", token || "");
+      try {
+        const jsonStr = (typeof payload === "string") ? payload : JSON.stringify(payload);
+        window.__unitySend("Bridge", "LoadFromManifest", jsonStr);
+      } catch (e) {
+        console.error("unity:init stringify failed", e);
+      }
+    });
+
+    // createUnityInstance 래핑: 인스턴스 준비 후 큐 flush
+    function wrapCreateUnityInstance() {
+      if (typeof window.createUnityInstance !== "function") return;
+      const _create = window.createUnityInstance;
+      window.createUnityInstance = function (canvas, cfg, onProgress) {
+        const p = _create(canvas, cfg, onProgress);
+        return p.then((inst) => {
+          window.unityInstance = inst;
+          (window.__unityReadyCallbacks || []).forEach((f) => { try { f(); } catch(_){} });
+          window.__unityReadyCallbacks = [];
+          return inst;
+        });
+      };
+    }
+
+    // .br → .gz → 무압축 순으로 자산 자동 탐지
+    async function pick(urls) {
+      for (const u of urls) {
+        try {
+          const r = await fetch(u, { method: "HEAD" });
+          if (r.ok) return u;
+        } catch (_) {}
+      }
+      return urls[0];
+    }
+
+    async function detectAssets() {
+      const dataUrl      = await pick([`${BASE}.data.br`, `${BASE}.data.gz`, `${BASE}.data`]);
+      const frameworkUrl = await pick([`${BASE}.framework.js.br`, `${BASE}.framework.js.gz`, `${BASE}.framework.js`]);
+      const codeUrl      = await pick([`${BASE}.wasm.br`, `${BASE}.wasm.gz`, `${BASE}.wasm`]);
+      return { dataUrl, frameworkUrl, codeUrl };
+    }
+
+    // 로더 스크립트 동적 로드 → createUnityInstance 호출
+    (async function boot() {
+      const loader = document.createElement("script");
+      loader.src = LOADER_JS;
+      loader.async = true;
+      loader.onload = async () => {
+        wrapCreateUnityInstance();
+        const canvas  = document.getElementById("unity-canvas");
+        const loading = document.getElementById("loading");
+        try {
+          const detected = await detectAssets();
+          const config = {
+            dataUrl: detected.dataUrl,
+            frameworkUrl: detected.frameworkUrl,
+            codeUrl: detected.codeUrl,
+            streamingAssetsUrl: STREAMING,
+            companyName: "WeatherCloset",
+            productName: "VirtualTryOn",
+            productVersion: "0.1.0",
+          };
+          // 로딩 진행률 UI
+          const onProgress = (p) => loading.textContent = `Loading ${Math.round(p * 100)}%`;
+          await createUnityInstance(canvas, config, onProgress);
+          loading.textContent = "Ready";
+          setTimeout(() => loading.style.display = "none", 200);
+        } catch (e) {
+          console.error(e);
+          loading.textContent = "Failed to load: " + e;
+        }
+      };
+      loader.onerror = () => {
+        document.getElementById("loading").textContent = "Loader not found: " + LOADER_JS;
+      };
+      document.body.appendChild(loader);
+    })();
+  </script>
+</body>
+</html>

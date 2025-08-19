@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8" />
+  <title>Cloth Viewer</title>
+  <link rel="shortcut icon" href="TemplateData/favicon.ico" />
+  <link rel="stylesheet" href="TemplateData/style.css" />
+  <style>
+    html, body { margin:0; padding:0; height:100%; width:100%; background:#231F20; }
+    #unity-container { width:100%; height:100vh; }
+    #unity-canvas { width:100%; height:100%; display:block; background:#231F20; }
+    #unity-loading-bar { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:300px; }
+    #unity-progress-bar-empty, #unity-progress-bar-full { height:18px; border-radius:9px; }
+    #unity-progress-bar-empty { background:rgba(255,255,255,.2); overflow:hidden; }
+    #unity-progress-bar-full { background:#fff; width:0%; transition:width .2s ease; }
+    #unity-warning { position:absolute; left:0; right:0; bottom:10px; text-align:center; color:#fff; font:12px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji"; }
+  </style>
+</head>
+<body>
+  <div id="unity-container">
+    <canvas id="unity-canvas" tabindex="-1"></canvas>
+    <div id="unity-loading-bar">
+      <div id="unity-logo"></div>
+      <div id="unity-progress-bar-empty"><div id="unity-progress-bar-full"></div></div>
+    </div>
+    <div id="unity-warning"></div>
+  </div>
+
+  <!-- ===== 1) 설정 · 토큰 주입 (loader 전에 실행) ===== -->
+  <script>
+    const qs         = new URLSearchParams(location.search);
+    const apiBase    = qs.get("apiBase")     || "http://15.165.129.131:3000/api";
+    const token      = qs.get("token")       || "";
+    const outfitId   = qs.get("outfitId")    || "";
+    const parentHint = qs.get("parentOrigin")|| ""; // 필요시 ?parentOrigin=http://15.165.129.131:5173
+    const fallbackParent = "http://15.165.129.131:5173";
+
+    function parseJwtId(tk){
+      if (!tk) return null;
+      try { return JSON.parse(atob(tk.split(".")[1]))?.id || null; } catch { return null; }
+    }
+    const userId = parseJwtId(token);
+
+    // ✅ Unity loader가 올라오기 전에 localStorage에 미리 저장
+    if (token)  localStorage.setItem("token", token);
+    if (userId) localStorage.setItem("userId", userId);
+
+    // 부모 오리진 결정
+    function getOrigin(u){ try { return new URL(u).origin; } catch { return ""; } }
+    const parentOrigin = parentHint || getOrigin(document.referrer) || fallbackParent;
+
+    // 전역 상태
+    window.__clothViewer__ = {
+      unityInstance: null,
+      ready: false,
+      queue: [],
+      apiUrl: (() => {
+        let url = `${apiBase}/cloth/outfits`;
+        if (userId) url += `?userId=${userId}`;
+        return url;
+      })()
+    };
+
+    // Unity 로 배너/경고 출력
+    function unityShowBanner(msg, type) {
+      const warning = document.getElementById("unity-warning");
+      const div = document.createElement('div');
+      div.textContent = msg;
+      div.style.padding = "6px 10px";
+      div.style.margin = "4px auto";
+      div.style.display = "inline-block";
+      div.style.borderRadius = "6px";
+      div.style.background = type === 'error' ? '#e74c3c' : '#f1c40f';
+      div.style.color = '#231F20';
+      warning.appendChild(div);
+      if (type !== 'error') setTimeout(() => warning.removeChild(div), 5000);
+    }
+
+    // 부모 → 자식 postMessage 수신
+    window.addEventListener("message", (e) => {
+      if (parentOrigin && e.origin !== parentOrigin) return; // 보안: 지정된 부모만 허용
+      const t = e.data?.type;
+      const id = e.data?.outfitId;
+      if ((t === "LOAD_OUTFIT" || t === "changeClothing") && id) {
+        sendToUnity("ChangeOutfit", id);
+      }
+    });
+
+    // JS → Unity (준비 전이면 큐에 적재)
+    function sendToUnity(method, param = "") {
+      const S = window.__clothViewer__;
+      if (!S.unityInstance || !S.ready) {
+        S.queue.push({ method, param });
+        console.warn("⚠️ Unity 아직 준비 안됨. 큐에 저장:", method, param);
+        return false;
+      }
+      try {
+        S.unityInstance.SendMessage("WebGLManager", method, param);
+        console.log("📤 SendMessage:", method, param);
+        return true;
+      } catch (err) {
+        console.error("❌ SendMessage 실패:", err);
+        return false;
+      }
+    }
+
+    // Unity → JS 콜백(외부에서 JSLib로 호출)
+    window.receiveUnityMessage = function(message) {
+      console.log("📨 Unity Message:", message);
+
+      if (message === "unityReady") {
+        const S = window.__clothViewer__;
+        S.ready = true;
+        console.log("✅ Unity 준비 완료");
+
+        // 서버 URL → 토큰 → 유저ID 순으로 세팅
+        sendToUnity("SetServerUrl", S.apiUrl);
+        if (token)  sendToUnity("SetToken", token);
+        if (userId) sendToUnity("SetUserId", userId);
+
+        // 대기 큐 비우기
+        const tasks = S.queue.slice();
+        S.queue.length = 0;
+        tasks.forEach(t => sendToUnity(t.method, t.param));
+
+        // 부모에게 준비완료 알림
+        if (window.parent && window.parent.postMessage) {
+          window.parent.postMessage({ type: "UNITY_READY" }, parentOrigin || "*");
+        }
+
+        // outfitId가 쿼리에 오면 명시적 로드
+        if (outfitId) sendToUnity("LoadSpecificOutfit", outfitId);
+      }
+
+      if (message.startsWith("serverUrlChanged:")) {
+        console.log("🔗 Server URL changed:", message.split(":")[1]);
+      }
+
+      if (message.startsWith("outfitsLoaded:")) {
+        console.log("✅ Outfits loaded:", message.split(":")[1]);
+      }
+
+      if (message.startsWith("outfitChanged:")) {
+        const changedId = message.split(":")[1];
+        console.log("👕 Outfit changed:", changedId);
+        if (window.parent && window.parent.postMessage) {
+          window.parent.postMessage({ type: "UNITY_CLOTH_CHANGED", outfitId: changedId }, parentOrigin || "*");
+        }
+      }
+
+      if (message.startsWith("error:")) {
+        console.error("❌ Unity Error:", message);
+        unityShowBanner(message.slice(6), "error");
+      }
+    };
+  </script>
+
+  <!-- ===== 2) Unity Loader =====
+       빌드명이 다르면 CLOSET.* 부분만 교체하세요. -->
+  <script src="Build/WebClothingViewer.loader.js"></script>
+
+  <!-- ===== 3) Unity 인스턴스 생성 ===== -->
+  <script>
+    (function boot() {
+      const container = document.getElementById("unity-container");
+      const canvas    = document.getElementById("unity-canvas");
+      const loadingBar= document.getElementById("unity-loading-bar");
+      const progress  = document.getElementById("unity-progress-bar-full");
+
+      const config = {
+        dataUrl: "Build/WebClothingViewer.data",
+        frameworkUrl: "Build/WebClothingViewer.framework.js",
+        codeUrl: "Build/WebClothingViewer.wasm",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "YourCompany",
+        productName: "Cloth Viewer",
+        productVersion: "1.0",
+        // 필요시 아래 옵션 사용
+        // matchWebGLToCanvasSize: true,
+        // devicePixelRatio: 1
+      };
+
+      loadingBar.style.display = "block";
+
+      createUnityInstance(canvas, config, (p) => {
+        progress.style.width = (100 * p) + "%";
+      }).then((instance) => {
+        window.__clothViewer__.unityInstance = instance;
+        loadingBar.style.display = "none";
+        // Unity 내부에서 JSLib를 통해 window.receiveUnityMessage("unityReady") 호출해야 완전 준비됩니다.
+      }).catch((message) => {
+        loadingBar.style.display = "none";
+        console.error("Unity create failed:", message);
+        const warn = document.getElementById("unity-warning");
+        warn.innerText = "Unity 로드를 시작하지 못했습니다: " + message;
+      });
+    })();
+  </script>
+</body>
+</html>

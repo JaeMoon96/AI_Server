@@ -12,6 +12,28 @@
 
 }
 
+/* Unity 전체 컨테이너 */
+.unity-container {
+  width: 100%;
+  height: 100%;
+  background: #231F20;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Unity Canvas 반응형 */
+#unity-canvas {
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 16 / 9;
+  display: block;
+  margin: 0 auto;
+  background: #231F20;
+}
+
+
 .mannequin {
     /* border: 1px solid white; */
     width: 32%;

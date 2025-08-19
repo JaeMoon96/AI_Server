@@ -1,6 +1,6 @@
 import './myPage.css';
 import { useState, useEffect, useRef } from "react";
-import UnityViewer from '../components/UnityViewer'
+import AvataViewer from '../components/AvatarViewer'
 import MyMenu from '../components/MyMenu'
 import Modal from '../components/Modal';
 import MannequinRegisterPage from './MannequinRegisterPage'
@@ -138,7 +138,7 @@ const modifyMyInfo = async () => {
             <div className="mannequin">
             <span>MY MANNEQUIN</span>
             <div className="mannequin3D">
-              <UnityViewer></UnityViewer>
+              <AvataViewer />
             </div>
             </div>
             <div className="infoWindow">

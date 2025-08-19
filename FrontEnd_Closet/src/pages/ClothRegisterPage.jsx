@@ -1,3 +1,4 @@
+// ClothRegisterPage.jsx - 큐 없는 간단한 버전
 import { useState, useEffect, useRef } from "react";
 import "./clothRegisterPage.css";
 import LoadingOverlay from "../components/LoadingOverlay";
@@ -11,15 +12,17 @@ function ClothRegisterPage({ onClose, onSuccess }) {
   });
 
   const [loading, setLoading] = useState(false);
-  const [loadingMsg, setLoadingMsg] = useState("Making Cloth 3D Model");
+  const [loadingMsg, setLoadingMsg] = useState("Processing...");
   const [imageFileFront, setImageFileFront] = useState(null);
   const [imageFileBack, setImageFileBack] = useState(null);
   const [previewFront, setPreviewFront] = useState(null);
   const [previewBack, setPreviewBack] = useState(null);
 
-  // 폴링 중 컴포넌트 unmount / 모달 닫힘 대응
   const cancelledRef = useRef(false);
+  
   useEffect(() => {
+    cancelledRef.current = false;
+    
     return () => {
       cancelledRef.current = true;
       if (previewFront) URL.revokeObjectURL(previewFront);
@@ -56,120 +59,105 @@ function ClothRegisterPage({ onClose, onSuccess }) {
     }
   };
 
-  async function pollStatus(jobId, onDone, onError) {
-  try {
-    if (!jobId) throw new Error("jobId가 비어 있습니다.");
-
-    while (true) {
-      if (cancelledRef.current) return;
-
-      const token = localStorage.getItem("token");
-      const r = await fetch(
-        `http://15.165.129.131:3000/api/cloth/status/${jobId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          credentials: "include",
-        }
-      );
-      const data = await r.json();
-      if (cancelledRef.current) return;
-
-      if (data.status === "not_found")
-        throw new Error("작업을 찾을 수 없습니다.");
-
-      if (data.stage === "predict")
-        setLoadingMsg("Detecting landmarks...");
-      if (data.stage === "cloth2tex")
-        setLoadingMsg("Generating texture (Cloth2Tex)...");
-
-      if (data.status === "completed") {
-        await onDone?.(data); // async 콜백이면 기다림
-        return;
-      }
-      if (data.status === "failed")
-        throw new Error(data.error || "failed");
-
-      await new Promise((res) => setTimeout(res, 2000));
-    }
-  } catch (e) {
-    try {
-      if (!cancelledRef.current) await onError?.(e);
-    } catch {}
-    return;
-  }
-}
-
+  // 🔥 강제 로딩 해제 함수
+  const forceStopLoading = () => {
+    console.log("🚨 Force stopping loading...");
+    setLoading(false);
+    cancelledRef.current = true;
+  };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  setLoadingMsg("Uploading images...");
-
-  if (!imageFileFront || !imageFileBack) {
-    alert("앞면과 뒷면 이미지를 모두 업로드해주세요.");
-    return;
-  }
-
-  try {
-    const token = localStorage.getItem("token");
-
-    const formData = new FormData();
-    formData.append("cloth_front", imageFileFront);
-    formData.append("cloth_back", imageFileBack);
-    Object.entries(form).forEach(([key, value]) =>
-      formData.append(key, value)
-    );
-
-    const res = await fetch("http://15.165.129.131:3000/api/cloth", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-      body: formData,
-      credentials: "include",
-    });
-
-    const payload = await res.json();
-    if (!res.ok) throw new Error(payload.error || "옷 등록 실패");
-
-    const predictJobId = payload?.jobs?.predictJobId;
-    const cloth2texJobId = payload?.jobs?.cloth2texJobId || payload?.clothId;
-
-    setLoadingMsg("Queued. Starting pipeline...");
-
-    await pollStatus(
-      predictJobId,
-      async () => {
-        await pollStatus(
-          cloth2texJobId,
-          async (done) => {
-            if (cancelledRef.current) return;
-            setLoading(false);
-            alert("ENROLL COMPLETE!");
-            onSuccess?.(done?.result);
-            onClose?.();
-          },
-          async (err) => {
-            if (cancelledRef.current) return;
-            setLoading(false);
-            alert("❌ Cloth2Tex 실패: " + err.message);
-          }
-        );
-      },
-      async (err) => {
-        if (cancelledRef.current) return;
-        setLoading(false);
-        alert("❌ 예측 실패: " + err.message);
-      }
-    );
-  } catch (err) {
-    if (!cancelledRef.current) {
-      console.error("등록 에러:", err);
-      alert("❌ 등록 중 오류가 발생했습니다.");
+    e.preventDefault();
+    
+    if (!imageFileFront || !imageFileBack) {
+      alert("앞면과 뒷면 이미지를 모두 업로드해주세요.");
+      return;
     }
-  } finally {
-    if (!cancelledRef.current) setLoading(false); // 어떤 경우에도 로딩 해제
-  }
-};
 
+    // 🔥 로딩 시작
+    setLoading(true);
+    setLoadingMsg("업로드 중...");
+    cancelledRef.current = false;
+    
+    // 🔥 8분 타임아웃 (landmark 2분 + cloth2tex 5분 + 여유 1분)
+    const timeoutId = setTimeout(() => {
+      if (loading && !cancelledRef.current) {
+        console.log("🚨 8분 강제 타임아웃 실행");
+        forceStopLoading();
+        alert("⏰ 8분 타임아웃: 작업이 너무 오래 걸리고 있습니다. 다시 시도해주세요.");
+      }
+    }, 8 * 60 * 1000); // 8분
+    
+    try {
+      console.log("📤 옷 등록 시작...");
+      const token = localStorage.getItem("token");
+      const formData = new FormData();
+      formData.append("cloth_front", imageFileFront);
+      formData.append("cloth_back", imageFileBack);
+      Object.entries(form).forEach(([key, value]) =>
+        formData.append(key, value)
+      );
+
+      // 🔥 단계별 메시지 업데이트 타이머 설정
+      const step1Timer = setTimeout(() => {
+        if (!cancelledRef.current) {
+          setLoadingMsg("Generating 3D texture... (2/3)");
+        }
+      }, 15000); // 15초 후
+      
+      const step2Timer = setTimeout(() => {
+        if (!cancelledRef.current) {
+          setLoadingMsg("Saving to database... (3/3)");
+        }
+      }, 60000); // 1분 후
+
+      const response = await fetch("http://15.165.129.131:3000/api/cloth", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+        credentials: "include",
+      });
+
+      // 타이머 정리
+      clearTimeout(step1Timer);
+      clearTimeout(step2Timer);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "등록 실패");
+      }
+
+      const result = await response.json();
+      console.log("✅ 등록 완료:", result);
+      
+      if (result.success) {
+        alert("✅ 옷 등록이 완료되었습니다!");
+        onSuccess?.(result);
+        onClose?.();
+      } else {
+        throw new Error(result.error || "등록 실패");
+      }
+      
+    } catch (error) {
+      console.error("💥 등록 실패:", error);
+      alert(`❌ 등록 실패: ${error.message}`);
+    } finally {
+      // 🔥 무조건 로딩 해제
+      clearTimeout(timeoutId);
+      setLoading(false);
+      cancelledRef.current = true;
+      console.log("🏁 로딩 완전히 해제됨");
+    }
+  };
+
+  // 🔥 닫기 버튼
+  const handleClose = () => {
+    if (loading) {
+      console.log("🚫 로딩 중 닫기 버튼 클릭, 강제 중단");
+      forceStopLoading();
+    }
+    onClose?.();
+  };
 
   return (
     <div className="cloth-register-page">
@@ -185,6 +173,7 @@ function ClothRegisterPage({ onClose, onSuccess }) {
             accept="image/*"
             onChange={handleImageChange}
             required
+            disabled={loading}
           />
           {previewFront && (
             <img
@@ -201,6 +190,7 @@ function ClothRegisterPage({ onClose, onSuccess }) {
             accept="image/*"
             onChange={handleImageChange}
             required
+            disabled={loading}
           />
           {previewBack && (
             <img
@@ -216,6 +206,7 @@ function ClothRegisterPage({ onClose, onSuccess }) {
             value={form.name}
             onChange={handleChange}
             required
+            disabled={loading}
           />
 
           <label>DESCRIPTION</label>
@@ -223,6 +214,7 @@ function ClothRegisterPage({ onClose, onSuccess }) {
             name="description"
             value={form.description}
             onChange={handleChange}
+            disabled={loading}
           />
 
           <label>CATEGORY</label>
@@ -230,6 +222,7 @@ function ClothRegisterPage({ onClose, onSuccess }) {
             name="category"
             value={form.category}
             onChange={handleChange}
+            disabled={loading}
           >
             <option value="top">TOP</option>
             <option value="bottom">BOTTOM</option>
@@ -241,6 +234,7 @@ function ClothRegisterPage({ onClose, onSuccess }) {
               name="subCategory"
               value={form.subCategory}
               onChange={handleChange}
+              disabled={loading}
             >
               <option value="T-shirt">T-shirt</option>
               <option value="Shirt">Shirt</option>
@@ -254,6 +248,7 @@ function ClothRegisterPage({ onClose, onSuccess }) {
               name="subCategory"
               value={form.subCategory}
               onChange={handleChange}
+              disabled={loading}
             >
               <option value="Pants">Pants</option>
               <option value="Shorts">Shorts</option>
@@ -261,16 +256,42 @@ function ClothRegisterPage({ onClose, onSuccess }) {
             </select>
           )}
 
-          <button type="submit" className="enrollButton">
-            ENROLL
+          <button 
+            type="submit" 
+            className="enrollButton"
+            disabled={loading}
+          >
+            {loading ? "Processing..." : "ENROLL"}
           </button>
+          
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             className="modal-close"
+            title={loading ? "강제 중단 및 닫기" : "닫기"}
           >
             ✖
           </button>
+          
+          {/* 🔥 로딩 중 강제 중단 버튼 */}
+          {loading && (
+            <button
+              type="button"
+              onClick={forceStopLoading}
+              className="force-stop-button"
+              style={{
+                backgroundColor: '#ff4444',
+                color: 'white',
+                border: 'none',
+                padding: '8px 16px',
+                borderRadius: '4px',
+                marginTop: '10px',
+                cursor: 'pointer'
+              }}
+            >
+              ⏹️ 강제 중단
+            </button>
+          )}
         </form>
       </div>
     </div>
