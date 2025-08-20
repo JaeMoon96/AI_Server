@@ -1,0 +1,93 @@
+이세옷 (ISECLOTH) LICENSE
+
+이 프로젝트는 여러 오픈소스 AI 모델과 라이브러리를 사용하고 있으며, 각각 다른 라이선스가 적용됩니다.
+
+===============================================================================
+THIRD-PARTY AI MODELS
+===============================================================================
+
+1. U-2-Net
+   License: Apache License 2.0
+   Repository: https://github.com/xuebinqin/U-2-Net
+   Purpose: 배경 제거 및 이미지 마스킹
+
+2. Cloth2Tex
+   License: 별도 명시되지 않음 (일반적으로 연구용)
+   Repository: https://github.com/HumanAIGC/Cloth2Tex
+   Purpose: 의류 텍스처 생성
+
+3. SMPLify-X
+   License: 비상업적 과학 연구 목적 전용 라이선스 (Max-Planck-Gesellschaft)
+   Repository: https://github.com/vchoutas/smplify-x
+   Purpose: 3D 인체 모델 파라미터 추정
+   Important: 상업적 사용을 위해서는 별도 라이선스 필요 (sales@meshcapade.com)
+
+4. PyMAF-X
+   License: 별도 명시되지 않음 (일반적으로 연구용)
+   Repository: https://github.com/HongwenZhang/PyMAF-X
+   Purpose: 단안 이미지로부터 전신 모델 회귀
+
+===============================================================================
+LICENSE COMPATIBILITY NOTICE
+===============================================================================
+
+⚠️ IMPORTANT NOTICE: 이 프로젝트는 상업적 사용이 제한된 AI 모델들을 포함하고 있습니다.
+
+특히 SMPLify-X는 다음 목적으로만 사용 가능합니다:
+- 비상업적 과학 연구
+- 비상업적 교육
+- 비상업적 예술적 프로젝트
+
+상업적 사용이 금지되는 활동:
+- 상업적 제품에 통합
+- 상업적 서비스에서 사용
+- 상업적 목적의 기타 아티팩트 생산
+
+===============================================================================
+RECOMMENDED USAGE
+===============================================================================
+
+위의 제약사항을 고려하여, 본 프로젝트는 연구 및 교육 목적으로만 사용하는 것을 권장합니다.
+
+상업적 사용을 고려하는 경우:
+1. SMPLify-X에 대한 상업적 라이선스 획득 (sales@meshcapade.com)
+2. 다른 제한적 라이선스 모델들에 대한 별도 허가 확인
+3. 해당 모델들을 대체할 수 있는 상업적 사용 가능한 대안 모델 검토
+
+===============================================================================
+MIT LICENSE (FOR ORIGINAL CODE)
+===============================================================================
+
+본 프로젝트의 오리지널 코드 부분은 MIT License 하에 배포됩니다:
+
+MIT License
+
+Copyright (c) 2025 이세옷 개발팀
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+===============================================================================
+DISCLAIMER
+===============================================================================
+
+참고: 사용하시기 전에 각 모델의 라이선스 조건을 반드시 확인하시고, 
+상업적 사용 시에는 법적 검토를 받으시기 바랍니다.
+
+본 소프트웨어는 기본 연구의 결과이며, "있는 그대로" 제공되며, 오류를 포함할 수 있습니다.
+본 소프트웨어의 사용은 전적으로 사용자의 책임입니다.
